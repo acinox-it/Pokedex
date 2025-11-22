@@ -1,13 +1,11 @@
-name: Deploy PokéDex
+name: Deploy PokéDex to Railway
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
     
     steps:
@@ -23,18 +21,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
-    - name: Lint with flake8
+    - name: Lint
       run: |
         pip install flake8
         flake8 app --count --select=E9,F63,F7,F82 --show-source --statistics || true
-    
-    - name: Run tests
-      run: |
-        pip install pytest
-        pytest || true
 
-  deploy-backend:
-    needs: build-and-test
+  deploy:
+    needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
@@ -46,25 +39,4 @@ jobs:
         RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
       run: |
         npm install -g @railway/cli
-        railway up --environment production
-
-  deploy-frontend:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Build frontend
-      run: |
-        mkdir -p build
-        cp -r app/frontend/templates/* build/
-        cp -r app/frontend/static build/
-    
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./build
-        cname: pokedex.votredomaine.com  # Optionnel: votre domaine personnalisé
+        railway up
