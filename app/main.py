@@ -29,10 +29,17 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS Configuration - more restrictive for production
+# CORS Configuration
+allowed_origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://pokedex.acinox.ovh",
+    "https://pokedex.acinox.ovh",
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost", "http://localhost:8000", "http://127.0.0.1:8000"],
+    allow_origins=allowed_origins,
     allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["Content-Type"],

@@ -11,7 +11,7 @@ services:
       MYSQL_USER: pokemon_user
       MYSQL_PASSWORD: user_password
     ports:
-      - "3306:3306"
+      - "127.0.0.1:3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./db.sql:/docker-entrypoint-initdb.d/db.sql
@@ -22,6 +22,7 @@ services:
       retries: 5
     networks:
       - pokedex_network
+    restart: unless-stopped
 
   # FastAPI Application
   pokedex:
@@ -33,7 +34,7 @@ services:
       DB_PASSWORD: root_password
       DB_NAME: pokemons_db
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     depends_on:
       mysql_db:
         condition: service_healthy
@@ -41,7 +42,14 @@ services:
       - .:/app
     networks:
       - pokedex_network
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 volumes:
   mysql_data:

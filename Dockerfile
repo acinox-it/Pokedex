@@ -12,6 +12,7 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
@@ -23,20 +24,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project
 COPY . .
 
-# Create .env with default values if not exists
-RUN if [ ! -f .env ]; then \
-    echo "DB_HOST=mysql_db" > .env && \
-    echo "DB_USER=root" >> .env && \
-    echo "DB_PASSWORD=root_password" >> .env && \
-    echo "DB_NAME=pokemons_db" >> .env; \
-    fi
-
 # Expose port
 EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/health')" || exit 1
+    CMD curl -f http://localhost:8000/health || exit 1
 
 # Run application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
