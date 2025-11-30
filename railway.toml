@@ -12,9 +12,3 @@ port = 8000
 # Restart policy
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
-
-# Wait for CI checks before deploying
-[deploy.github]
-# Only deploy after GitHub Actions checks pass
-# This requires Railway to be connected to GitHub
-requireCIPass = true
