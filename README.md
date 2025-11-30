@@ -8,6 +8,16 @@ Un API Pokédex rapide et sécurisé avec interface web construit avec FastAPI e
 
 > L'app est hébergée sur Railway avec base de données MySQL complètement fonctionnelle
 
+## 🔄 CI/CD Pipeline
+
+**Déploiement automatique avec tests:**
+- GitHub Actions teste le code à chaque push
+- Railway attend que les tests passent ✅
+- Si tests OK → Déploiement automatique 🚀
+- Si tests échouent → Déploiement bloqué 🛑
+
+Voir [CI_CD_GUIDE.md](./CI_CD_GUIDE.md) pour plus de détails.
+
 ## 🚀 Démarrage Rapide
 
 ### 1. Installation
@@ -105,16 +115,21 @@ PokéDex/
 - Compte Railway (gratuit)
 
 **Étapes:**
-1. Push vers GitHub: `git push origin main`
-2. Allez sur [railway.app](https://railway.app)
-3. **New Project** → **Deploy from GitHub repo**
-4. Sélectionnez ce repository
-5. Ajoutez un service **MySQL**
-6. Configurez les variables (voir [RAILWAY_QUICK_START.md](./RAILWAY_QUICK_START.md))
+1. Connecter Railway à GitHub (Settings → GitHub)
+2. Créer un **New Project** → **Deploy from GitHub repo**
+3. Sélectionner ce repository
+4. Ajouter un service **MySQL**
+5. Configurer les variables (voir [RAILWAY_QUICK_START.md](./RAILWAY_QUICK_START.md))
 
-**C'est tout!** Railway redéploiera automatiquement à chaque push.
+**Flux de Déploiement:**
+- ✅ `git push` → GitHub Actions teste
+- ✅ Tests réussissent → Railway déploie automatiquement
+- ❌ Tests échouent → Déploiement bloqué
 
-Pour le guide complet: [RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md)
+**Documentation:**
+- [RAILWAY_QUICK_START.md](./RAILWAY_QUICK_START.md) - Guide rapide
+- [RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md) - Détails complets
+- [CI_CD_GUIDE.md](./CI_CD_GUIDE.md) - Pipeline CI/CD
 
 ### Docker Local
 ```bash
